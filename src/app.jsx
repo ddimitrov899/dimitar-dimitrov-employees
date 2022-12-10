@@ -4,10 +4,11 @@ import OutputTable from './components/output-table'
 import ReadCSVFile from "./helpers/read-csv-file.helper";
 
 export default function App() {
-    const [employees, setEmployees] = useState([])
+    const [employees, setEmployees] = useState(null)
     const readFile = (file) => {
         ReadCSVFile.readFile(file, (err, res) => {
             if(!err) {
+                console.log(res)
                 setEmployees(res)
             }
         })
@@ -15,7 +16,7 @@ export default function App() {
     return (
         <main>
             <InputForm readFile={readFile}/>
-            {employees.length > 0 ? <OutputTable employees={employees}/> : null}
+            {employees ? <OutputTable employees={employees}/>  : null}
         </main>
     )
 }

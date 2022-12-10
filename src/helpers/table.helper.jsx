@@ -21,52 +21,36 @@ const TableHelper = {
     getProjectWorksOnSameDays: (coupleProjects, employees) => {
         const sameDates = []
         coupleProjects.map(coupleProject => {
-            const [firstEmpId, firstProjectId, firstDateFrom, firstDateTo] = employees[coupleProject[0]].split(';')
-            const [secondEmpId, secondProjectId, secondDateFrom, secondDateTo] = employees[coupleProject[1]].split(';')
-            if ((Date.parse(secondDateFrom) >= Date.parse(firstDateFrom) ||
-                Date.parse(firstDateTo) <= Date.parse(secondDateTo))) {
+            let [firstEmpId, firstProjectId, firstDateFrom, firstDateTo] = employees[coupleProject[0]].split(/[;,]]/g)
+            let [secondEmpId, secondProjectId, secondDateFrom, secondDateTo] = employees[coupleProject[1]].split(/[;,]/g)
+            if(isNaN(new Date(firstDateTo.toString()).getTime())) {
+                firstDateTo = new Date(firstDateFrom).setDate(new Date(firstDateFrom).getDate() + 1)
+            }
+            if(isNaN(new Date(secondDateTo.toString()).getTime())) {
+                secondDateTo = new Date(secondDateFrom).setDate(new Date(secondDateFrom).getDate() + 1)
+            }
+            let calcDays = TableHelper.dateCalculator((new Date(secondDateFrom) >= new Date(firstDateFrom) ?
+                    new Date(secondDateFrom) : new Date(firstDateFrom)),
+                new Date(secondDateTo) >= new Date(firstDateTo) ? new Date(firstDateTo) : new Date(secondDateTo))
+            if(calcDays > 0) {
                 sameDates.push({
-                    firstEmpId,
-                    firstProjectId,
-                    firstDateFrom,
-                    firstDateTo,
-                    secondEmpId,
-                    secondProjectId,
-                    secondDateFrom,
-                    secondDateTo
+                    emp1: firstEmpId,
+                    emp2: secondEmpId,
+                    projId: firstProjectId,
+                    days: TableHelper.dateCalculator(
+                        (new Date(secondDateFrom) >= new Date(firstDateFrom) ?
+                            new Date(secondDateFrom) :
+                            new Date(firstDateFrom)),
+                        new Date(secondDateTo) >= new Date(firstDateTo) ? new Date(firstDateTo) : new Date(secondDateTo))
                 })
             }
         })
         return sameDates
     },
-    calculateDaysOnSame: (sameDates) => {
-        const proj = []
-        sameDates.map(sameDate => {
-            if (isNaN(new Date(sameDate.firstDateTo).getTime()) || isNaN(new Date(sameDate.secondDateTo).getTime())) {
-                proj.push({
-                    emp1: sameDate.firstEmpId,
-                    emp2: sameDate.secondEmpId,
-                    projId: sameDate.firstProjectId,
-                    days: 1
-                })
-            } else if (new Date(sameDate.firstDateTo).getTime() > new Date(sameDate.secondDateTo).getTime()) {
-                proj.push({
-                    emp1: sameDate.firstEmpId,
-                    emp2: sameDate.secondEmpId,
-                    projId: sameDate.firstProjectId,
-                    days: TableHelper.dateCalculator(
-                        (new Date(sameDate.secondDateFrom) >= new Date(sameDate.firstDateFrom) ?
-                            new Date(sameDate.secondDateFrom) :
-                            new Date(sameDate.firstDateFrom)),
-                        new Date(sameDate.secondDateTo))
-                })
-            }
-        })
-        return proj
-    },
+
     dateCalculator: (startDate, endDate) => {
         let days = 0
-        for (let i = startDate; i <= endDate; new Date(startDate.setDate(startDate.getDate() + 1))) {
+        for (let i = startDate; i < endDate; new Date(startDate.setDate(startDate.getDate() + 1))) {
             days++;
         }
         return days
@@ -74,13 +58,13 @@ const TableHelper = {
 
     getUniquesArr: (arr) => {
         const unique = []
-        for (let i = 1; i < arr.length; i+=2) {
+        for (let i = 1; i < arr.length; i += 2) {
             let uniqueCounter = 0
             for (let j = 0; j < arr[i].length; j++) {
-                if(arr[i][j] === arr[i - 1][j]) {
+                if (arr[i][j] === arr[i - 1][j]) {
                     uniqueCounter++
                 }
-                if(uniqueCounter >= 2) {
+                if (uniqueCounter >= 2) {
                     unique.push(arr[i])
                     uniqueCounter = 0
                 }

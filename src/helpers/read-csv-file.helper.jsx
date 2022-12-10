@@ -8,8 +8,7 @@ const ReadCsvFileHelper = {
       results = ReadCsvFileHelper.getCurrentProjectWorks(results).filter(Boolean)
       if(results.length) {
         const coupleProjects = TableHelper.iterationProjects(results)
-        const sameDates = TableHelper.getProjectWorksOnSameDays(coupleProjects, results)
-        results = TableHelper.calculateDaysOnSame(sameDates)
+        results = TableHelper.getProjectWorksOnSameDays(coupleProjects, results)
         callback(null, results)
       }
     }

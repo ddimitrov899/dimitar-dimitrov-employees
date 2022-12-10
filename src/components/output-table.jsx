@@ -15,7 +15,7 @@ const OutputTable = ({employees}) => {
 
     return (
         <div id="output">
-            <table>
+            {employees.length > 0? <table>
                 <thead>
                 <tr>
                     <th>Employee ID #1</th>
@@ -27,7 +27,7 @@ const OutputTable = ({employees}) => {
                 <tbody>
                     {renderEmployeesOnSameDate()}
                 </tbody>
-            </table>
+            </table> : <h3>No Employees found</h3>}
         </div>)
 }
 export default OutputTable
