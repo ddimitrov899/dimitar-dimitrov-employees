@@ -1,0 +1,9 @@
+#output {
+    margin-top: 10px;
+}
+#output table, #output table tr th, #output table tr > td {
+    border: 1px solid black;
+    text-align: center;
+    border-collapse: collapse;
+    padding: 3px;
+}

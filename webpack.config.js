@@ -23,10 +23,14 @@ module.exports = ({ mode = "development" }) => {
           exclude: /node_modules/,
           loader: "babel-loader",
         },
+        {
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
+        },
       ],
     },
     resolve: {
-      extensions: [".js", ".jsx"],
+      extensions: [".js", ".jsx", '.css'],
     },
     output: {
       path: path.resolve(__dirname, "dist"),
