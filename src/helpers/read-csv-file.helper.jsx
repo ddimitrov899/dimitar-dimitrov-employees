@@ -4,7 +4,7 @@ const ReadCsvFileHelper = {
   readFile: (fileCSV, callback) => {
     const reader = new FileReader()
     reader.onload = () => {
-      let results = reader.result.split(/\s+/g).filter(Boolean)
+      let results = reader.result.split(/[\n\r]/g).filter(Boolean)
       results = ReadCsvFileHelper.getCurrentProjectWorks(results).filter(Boolean)
       if(results.length) {
         const coupleProjects = TableHelper.iterationProjects(results)

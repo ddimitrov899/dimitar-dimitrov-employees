@@ -8,7 +8,6 @@ export default function App() {
     const readFile = (file) => {
         ReadCSVFile.readFile(file, (err, res) => {
             if(!err) {
-                console.log(res)
                 setEmployees(res)
             }
         })

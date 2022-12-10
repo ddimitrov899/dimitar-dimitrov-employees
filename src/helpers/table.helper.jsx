@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const TableHelper = {
     iterationProjects: (employees) => {
         let coupleProjects = []
@@ -21,18 +23,22 @@ const TableHelper = {
     getProjectWorksOnSameDays: (coupleProjects, employees) => {
         const sameDates = []
         coupleProjects.map(coupleProject => {
-            let [firstEmpId, firstProjectId, firstDateFrom, firstDateTo] = employees[coupleProject[0]].split(/[;,]]/g)
+            let [firstEmpId, firstProjectId, firstDateFrom, firstDateTo] = employees[coupleProject[0]].split(/[;,]/g)
             let [secondEmpId, secondProjectId, secondDateFrom, secondDateTo] = employees[coupleProject[1]].split(/[;,]/g)
-            if(isNaN(new Date(firstDateTo.toString()).getTime())) {
+            firstDateFrom = moment(firstDateFrom).toDate()
+            firstDateTo = moment(firstDateTo).toDate()
+            secondDateFrom = moment(secondDateFrom).toDate()
+            secondDateTo = moment(secondDateTo).toDate()
+            if (isNaN(new Date(firstDateTo.toString()).getTime())) {
                 firstDateTo = new Date(firstDateFrom).setDate(new Date(firstDateFrom).getDate() + 1)
             }
-            if(isNaN(new Date(secondDateTo.toString()).getTime())) {
+            if (isNaN(new Date(secondDateTo.toString()).getTime())) {
                 secondDateTo = new Date(secondDateFrom).setDate(new Date(secondDateFrom).getDate() + 1)
             }
             let calcDays = TableHelper.dateCalculator((new Date(secondDateFrom) >= new Date(firstDateFrom) ?
                     new Date(secondDateFrom) : new Date(firstDateFrom)),
                 new Date(secondDateTo) >= new Date(firstDateTo) ? new Date(firstDateTo) : new Date(secondDateTo))
-            if(calcDays > 0) {
+            if (calcDays > 0) {
                 sameDates.push({
                     emp1: firstEmpId,
                     emp2: secondEmpId,
